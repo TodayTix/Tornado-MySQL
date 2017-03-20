@@ -1133,7 +1133,13 @@ class MySQLResult(object):
                     data = data.decode(encoding)
                 if DEBUG: print("DEBUG: DATA = ", data)
                 if converter is not None:
-                    data = converter(data)
+                    # If this converter is a list type, assume this is a string
+                    # converter and that it should be converted to unicode.
+                    # Not perfect but it'll work for most purposes.
+                    if type(converter) == list:
+                        data = unicode(data)
+                    else:
+                        data = converter(data)
             row.append(data)
         return tuple(row)
 
